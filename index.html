@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Doc ROI | Calculadora ROI + LTV + Customer Equity</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Navegacion del cuestionario">
+        <div class="brand-lockup">
+          <div class="brand-mark" aria-hidden="true">DR</div>
+          <div>
+            <p class="eyebrow">Doc ROI</p>
+            <h1>ROI + LTV + Customer Equity</h1>
+          </div>
+        </div>
+        <nav id="stepNav" class="step-nav"></nav>
+        <div class="side-note">
+          <strong>Modo docente</strong>
+          <span>Cada cifra debe poder defenderse en una conversacion de direccion.</span>
+        </div>
+      </aside>
+
+      <main>
+        <header class="hero">
+          <div>
+            <p class="eyebrow">Kukulcan AI Factory</p>
+            <h2>Convierte una campana o proyecto en una historia financiera que se entiende.</h2>
+            <p>
+              Esta solucion acompana al alumno paso a paso: primero recoge supuestos, despues ordena ingresos,
+              OPEX, CAPEX y LTV, y finalmente traduce el resultado en indicadores ejecutivos y Customer Equity Activo.
+            </p>
+          </div>
+          <div class="hero-actions">
+            <button id="printReport" class="primary-action" type="button">Ver / bajar PDF</button>
+            <button id="resetExample" class="ghost-action" type="button">Restaurar ejemplo</button>
+          </div>
+        </header>
+
+        <section class="workspace">
+          <div class="question-panel">
+            <div class="panel-topline">
+              <span id="stepCounter"></span>
+              <span id="completionHint"></span>
+            </div>
+            <div id="stepContent"></div>
+            <div class="step-controls">
+              <button id="prevStep" class="ghost-action" type="button">Anterior</button>
+              <button id="nextStep" class="primary-action" type="button">Siguiente</button>
+            </div>
+          </div>
+
+          <aside class="live-panel" aria-label="Resumen vivo de resultados">
+            <div class="panel-heading">
+              <p class="eyebrow">Resultado vivo</p>
+              <h3 id="resultTitle">Viabilidad del proyecto</h3>
+            </div>
+            <div id="kpiStrip" class="kpi-strip"></div>
+            <div id="executiveRead" class="executive-read"></div>
+            <div class="mini-chart">
+              <div class="chart-head">
+                <span>Cash flow acumulado</span>
+                <strong>12 meses</strong>
+              </div>
+              <div id="barChart" class="bar-chart" aria-label="Grafico de flujo acumulado"></div>
+            </div>
+          </aside>
+        </section>
+
+        <section id="report" class="report-sheet" aria-label="Informe final">
+          <div class="report-cover">
+            <div class="brand-lockup compact">
+              <div class="brand-mark" aria-hidden="true">DR</div>
+              <div>
+                <p class="eyebrow">Doc ROI</p>
+                <h2>Informe ROI, LTV y Customer Equity</h2>
+              </div>
+            </div>
+            <p id="reportMeta"></p>
+          </div>
+          <div id="reportBody"></div>
+        </section>
+      </main>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
