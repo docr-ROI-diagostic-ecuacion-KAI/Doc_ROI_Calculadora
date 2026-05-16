@@ -59,8 +59,20 @@
   font-weight: 800;
 }
 
+.month-field h3 {
+  margin: 0;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--line);
+  font-size: 1rem;
+}
+
 .month-field input {
   min-width: 0;
+}
+
+.month-field small {
+  color: var(--muted);
+  line-height: 1.35;
 }
 
 @media (max-width: 900px) {
