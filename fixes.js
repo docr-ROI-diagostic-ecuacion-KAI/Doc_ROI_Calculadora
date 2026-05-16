@@ -27,11 +27,12 @@ updateStepCopy(7, "Resultado explicado", "El cierre traduce el modelo en indicad
 
 calculate = function calculateWithKOnVan() {
   const result = docroiOriginalCalculate();
-  const kValue = n(readPath("meta.kValue"));
+  const kPercent = n(readPath("meta.kValue"));
+  const kValue = kPercent / 100;
   const kMultiplier = 1 + kValue;
   const vanBase = result.van;
   const vanAdjusted = vanBase * kMultiplier;
-  return { ...result, vanBase, van: vanAdjusted, kValue, kMultiplier, kAdjustment: vanAdjusted - vanBase };
+  return { ...result, vanBase, van: vanAdjusted, kValue, kPercent, kMultiplier, kAdjustment: vanAdjusted - vanBase };
 };
 
 if (typeof consentField === "function") {
@@ -40,7 +41,7 @@ if (typeof consentField === "function") {
 
 renderContext = function renderContextWithRgpd() {
   const notesPlaceholder = typeof placeholders !== "undefined" && placeholders.notes ? placeholders.notes : "";
-  return `<div class="field-grid">${input("meta.project", "Nombre del proyecto", "Ejemplo en placeholder, no como dato cargado.", "text")}${input("meta.team", "Equipo responsable", "Quien firma las hipotesis.", "text")}${input("meta.email", "Correo electronico", "Email de contacto para comunicaciones DocROI.", "email")}<div class="field full consent-field"><label><input type="checkbox" data-check="meta.rgpdConsent" ${readPath("meta.rgpdConsent") ? "checked" : ""}><span>${rgpdText}</span></label></div>${input("meta.date", "Fecha del caso", "Fecha de version del modelo.", "date")}${input("meta.arpu", "Ingreso medio por cliente / ARPU", "Importe medio por cliente.")}${input("meta.wacc", "WACC anual (%)", "Escribe 8 para 8%.")}${input("meta.riskPremium", "Prima de riesgo (%)", "Escribe 5 para 5%.")}${input("meta.kValue", "Valor K para VAN/VNA", "Ajuste de sensibilidad aplicado al VAN/VNA. Ejemplo: 0.007 significa +0,7% sobre el VAN.")}<div class="field full"><label for="notes">Narrativa del caso</label><textarea id="notes" data-path="notes" rows="4" placeholder="${notesPlaceholder}">${displayValue(state.notes)}</textarea><small>Escribe que se quiere probar y por que importa para negocio.</small></div></div>`;
+  return `<div class="field-grid">${input("meta.project", "Nombre del proyecto", "Ejemplo en placeholder, no como dato cargado.", "text")}${input("meta.team", "Equipo responsable", "Quien firma las hipotesis.", "text")}${input("meta.email", "Correo electronico", "Email de contacto para comunicaciones DocROI.", "email")}<div class="field full consent-field"><label><input type="checkbox" data-check="meta.rgpdConsent" ${readPath("meta.rgpdConsent") ? "checked" : ""}><span>${rgpdText}</span></label></div>${input("meta.date", "Fecha del caso", "Fecha de version del modelo.", "date")}${input("meta.arpu", "Ingreso medio por cliente / ARPU", "Importe medio por cliente.")}${input("meta.wacc", "WACC anual (%)", "Escribe 8 para 8%.")}${input("meta.riskPremium", "Prima de riesgo (%)", "Escribe 5 para 5%.")}${input("meta.kValue", "Valor K para VAN/VNA (%)", "Ajuste de sensibilidad aplicado al VAN/VNA. Escribe 0,7 para 0,7%.")}<div class="field full"><label for="notes">Narrativa del caso</label><textarea id="notes" data-path="notes" rows="4" placeholder="${notesPlaceholder}">${displayValue(state.notes)}</textarea><small>Escribe que se quiere probar y por que importa para negocio.</small></div></div>`;
 };
 
 renderAudience = function renderAudienceResponsive() {
@@ -62,7 +63,7 @@ renderEquity = function renderEquityExecutive() {
 function kaiVariableExplainRows() { return kaiFields.map((field) => `<tr><td><strong>${field.code}</strong></td><td>${field.title}</td><td>${field.help}</td></tr>`).join(""); }
 
 renderKpiExplain = function renderKpiExplainWithK(result) {
-  const rows = [["ROI", pct(result.roi), "Retorno sobre la inversion total del proyecto."], ["VAN/VNA base", money(result.vanBase), "Valor actual neto antes de aplicar el ajuste K."], ["Valor K", num(result.kValue), "Sensibilidad aplicada al VAN/VNA. 0.007 significa +0,7%."], ["VAN/VNA ajustado", money(result.van), "VAN/VNA base multiplicado por 1 + K."], ["Payback", result.payback ? `Mes ${result.payback}` : "No recuperado", "Mes en el que la caja acumulada compensa la inversion."], ["LTV diferencial", money(result.ltv.differential), "Valor extra por cliente al mejorar la retencion."], ["Customer Equity CE_i", num(result.kai.ce), "Valor relacional ajustado por coste y WACC."]];
+  const rows = [["ROI", pct(result.roi), "Retorno sobre la inversion total del proyecto."], ["VAN/VNA base", money(result.vanBase), "Valor actual neto antes de aplicar el ajuste K."], ["Valor K", `${num(result.kPercent)} %`, "Sensibilidad aplicada al VAN/VNA. Si escribes 0,7, el modelo aplica 0,7%."], ["VAN/VNA ajustado", money(result.van), "VAN/VNA base multiplicado por 1 + K."], ["Payback", result.payback ? `Mes ${result.payback}` : "No recuperado", "Mes en el que la caja acumulada compensa la inversion."], ["LTV diferencial", money(result.ltv.differential), "Valor extra por cliente al mejorar la retencion."], ["Customer Equity CE_i", num(result.kai.ce), "Valor relacional ajustado por coste y WACC."]];
   return `<table class="result-table"><thead><tr><th>KPI</th><th>Resultado</th><th>Como leerlo</th></tr></thead><tbody>${rows.map((x) => `<tr><td><strong>${x[0]}</strong></td><td>${x[1]}</td><td>${x[2]}</td></tr>`).join("")}</tbody></table><div class="kai-report"><h3>Lectura de variables KAI</h3><p>Estas variables explican de donde sale la lectura de Customer Equity: confianza, uso, relacion, dato, contexto, monetizacion y coste atribuible.</p><table class="result-table"><thead><tr><th>Variable</th><th>Lectura ejecutiva</th><th>Criterio para defenderla</th></tr></thead><tbody>${kaiVariableExplainRows()}</tbody></table></div>`;
 };
 
