@@ -74,3 +74,132 @@
     grid-template-columns: 1fr;
   }
 }
+
+.brand-lockup {
+  align-items: flex-start;
+}
+
+.sidebar .docroi-logo {
+  width: 190px;
+  max-width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+.sidebar .brand-lockup {
+  display: grid;
+  gap: 12px;
+}
+
+.sidebar .brand-lockup h1 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #dcdcdc;
+}
+
+.kai-intro {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: flex-start;
+  margin-bottom: 16px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.kai-intro h3 {
+  margin-bottom: 8px;
+  font-size: 1.25rem;
+}
+
+.kai-intro p:not(.eyebrow) {
+  margin-bottom: 0;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.kai-intro a {
+  flex: 0 0 auto;
+  border: 1px solid #111;
+  border-radius: 999px;
+  padding: 10px 14px;
+  color: #111;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.compact-formula {
+  margin-bottom: 16px;
+  font-size: 0.86rem;
+}
+
+.kai-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.kai-field {
+  display: grid;
+  gap: 10px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.kai-field h3 {
+  margin: 4px 0 6px;
+  font-size: 1.02rem;
+}
+
+.kai-field p {
+  margin: 0;
+  color: #333;
+  line-height: 1.48;
+}
+
+.kai-field small {
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.kai-code {
+  display: inline-flex;
+  width: fit-content;
+  border: 1px solid #111;
+  padding: 3px 7px;
+  color: #111;
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.kai-summary {
+  margin-top: 16px;
+}
+
+.kai-report {
+  margin-top: 24px;
+}
+
+.kai-report p {
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+@media (max-width: 780px) {
+  .kai-intro {
+    display: grid;
+  }
+
+  .kai-intro a {
+    width: fit-content;
+  }
+
+  .kai-fields {
+    grid-template-columns: 1fr;
+  }
+}
