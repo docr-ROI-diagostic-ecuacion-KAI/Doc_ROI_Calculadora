@@ -57,3 +57,7 @@ bindInputs = function bindInputsWithLiveTotals() {
     });
   });
 };
+
+renderCurrentStep();
+renderLive();
+renderReport();
