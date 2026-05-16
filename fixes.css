@@ -28,3 +28,49 @@
 .consent-field small {
   display: none;
 }
+
+.workspace {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.live-panel {
+  display: none;
+}
+
+.audience-months {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.month-field {
+  display: grid;
+  gap: 7px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.month-field label {
+  color: #111;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.month-field input {
+  min-width: 0;
+}
+
+@media (max-width: 900px) {
+  .audience-months {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .audience-months {
+    grid-template-columns: 1fr;
+  }
+}
