@@ -33,10 +33,32 @@ function decimalFromPercentPath(path) { return n(readPath(path)) / 100; }
 function updateStepRenderer(index, renderer) { if (!Array.isArray(steps) || !steps[index]) return; if (Array.isArray(steps[index])) steps[index][3] = renderer; else steps[index].render = renderer; }
 function updateStepCopy(index, title, intro, reflection) { if (!Array.isArray(steps) || !steps[index]) return; if (Array.isArray(steps[index])) { steps[index][0] = title; steps[index][1] = intro; steps[index][2] = reflection; } else { steps[index].title = title; steps[index].intro = intro; steps[index].reflection = reflection; } }
 
-const docroiOriginalCalculate = calculate;
-if (typeof placeholders !== "undefined") placeholders.notes = "Ejemplo: caso de negocio para estimar si la campana sostiene su inversion y mejora el valor del cliente.";
-updateStepCopy(6, "Customer Equity Activo", "Esta parte aplica la estructura oficial KAI·ROI v1 desde una capa operativa de cumplimentacion. La formula formal es soberana; las preguntas solo ayudan a introducir valores defendibles.", "Responde como C-level: si una variable no esta justificada, dejala pendiente. Un dato desconocido no equivale a cero.");
-updateStepCopy(7, "Resultado explicado", "El cierre traduce el modelo en indicadores que un C-level puede leer rapido y un equipo puede defender con criterio.", "Un buen resultado no es solo un numero positivo. Es una decision: invertir, optimizar o redisenar.");
+if (typeof placeholders !== "undefined") {
+  placeholders.notes = "Ejemplo: caso de negocio para estimar si la campana sostiene su inversion y mejora el valor del cliente.";
+  placeholders.audience = Array(12).fill("");
+  placeholders["meta.conversion"] = "";
+  placeholders["meta.initialCustomers"] = "";
+}
+if (!Array.isArray(state.monthlyConversion)) state.monthlyConversion = Array(12).fill("");
+
+updateStepCopy(
+  1,
+  "Audiencia y conversion",
+  "Define la audiencia estimada y la conversion como porcentaje visible. La conversion global se copia a los meses y puedes ajustar cada mes si hay una hipotesis distinta.",
+  "Si alguien cuestiona la conversion, aporta evidencia, benchmark o criterio comercial. No la trates como una cifra decorativa."
+);
+updateStepCopy(
+  6,
+  "Customer Equity Activo",
+  "Esta parte aplica la estructura oficial KAI·ROI v1 desde una capa operativa de cumplimentacion. La formula formal es soberana; las preguntas solo ayudan a introducir valores defendibles.",
+  "Responde como C-level: si una variable no esta justificada, dejala pendiente. Un dato desconocido no equivale a cero."
+);
+updateStepCopy(
+  7,
+  "Resultado explicado",
+  "El cierre traduce el modelo en indicadores que un C-level puede leer rapido y un equipo puede defender con criterio.",
+  "Un buen resultado no es solo un numero positivo. Es una decision: invertir, optimizar o redisenar."
+);
 
 calculateKai = function calculateKaiOfficialV1() {
   const required = kaiFields.map((field) => field.path);
@@ -52,8 +74,44 @@ calculateKai = function calculateKaiOfficialV1() {
   return { incomplete: false, psi, spo, kaiStar, md, cost, ce, enterpriseCe: ce, vCe: ce > 0 ? 100 : 0 };
 };
 
-calculate = function calculateWithKOnVan() {
-  const result = docroiOriginalCalculate();
+calculate = function calculateWithMonthlyConversionAndK() {
+  const m = state.meta;
+  const conversionGlobal = decimalFromPercentPath("meta.conversion");
+  const monthConversion = months.map((_, i) => hasInput(state.monthlyConversion?.[i]) ? n(state.monthlyConversion[i]) / 100 : conversionGlobal);
+  const clients = state.audience.map((audience, i) => n(audience) * monthConversion[i]);
+  const monthlyRevenue = clients.map((clientCount) => clientCount * n(m.arpu));
+  const opexQ = quarters.map((_, i) => sum(state.opexRows.map((row) => row.q[i])));
+  const monthlyOpex = months.map((_, i) => opexQ[Math.floor(i / 3)] / 3);
+  const capex = sum(state.capexRows.map((row) => n(row.units) * n(row.unitInvestment)));
+  const cashFlow = monthlyRevenue.map((revenue, i) => revenue - monthlyOpex[i] - (i === 0 ? capex : 0));
+  const accumulated = cashFlow.reduce((items, value, i) => { items.push(value + (items[i - 1] || 0)); return items; }, []);
+  const totalRevenue = sum(monthlyRevenue);
+  const totalOpex = sum(monthlyOpex);
+  const netProfit = sum(cashFlow);
+  const roi = capex ? netProfit / capex : 0;
+  const wacc = decimalFromPercentPath("meta.wacc");
+  const monthlyRate = Math.pow(1 + wacc, 1 / 12) - 1;
+  const vanBaseCalculated = cashFlow.reduce((total, value, i) => total + value / Math.pow(1 + monthlyRate, i + 1), 0);
+  const paybackIndex = accumulated.findIndex((value) => value >= 0);
+  const result = {
+    clients,
+    monthlyRevenue,
+    monthlyOpex,
+    capex,
+    cashFlow,
+    accumulated,
+    totalRevenue,
+    totalOpex,
+    netProfit,
+    roi,
+    van: vanBaseCalculated,
+    payback: paybackIndex >= 0 ? paybackIndex + 1 : null,
+    roiCe: capex ? (totalRevenue - totalOpex) / capex : 0,
+    roiPure: roi - wacc,
+    ltv: calculateLtv(),
+    kai: calculateKai(),
+    monthConversion
+  };
   const kPercent = n(readPath("meta.kValue"));
   const kValue = kPercent / 100;
   const kMultiplier = 1 + kValue;
@@ -70,8 +128,33 @@ renderContext = function renderContextWithRgpd() {
 };
 
 renderAudience = function renderAudienceResponsive() {
-  const monthInputs = months.map((month, index) => `<div class="month-field"><label for="audience-${index}">${month}</label><input id="audience-${index}" data-array="audience" data-index="${index}" type="number" value="${displayValue(state.audience[index])}" placeholder="${placeholders.audience?.[index] || ""}"></div>`).join("");
-  return `<div class="field-grid">${input("meta.conversion", "Conversion objetivo (%)", "Escribe 3 para 3%.")}${input("meta.initialCustomers", "Cartera inicial LTV", "Base de clientes para valorar la mejora.")}</div><div class="audience-months">${monthInputs}</div>`;
+  const globalConversion = displayValue(readPath("meta.conversion"));
+  const monthInputs = months.map((month, index) => {
+    const monthlyValue = hasInput(state.monthlyConversion?.[index]) ? displayValue(state.monthlyConversion[index]) : globalConversion;
+    return `<div class="month-field"><h3>${month}</h3><label for="audience-${index}">Audiencia estimada</label><input id="audience-${index}" data-array="audience" data-index="${index}" type="number" value="${displayValue(state.audience[index])}"><label for="month-conversion-${index}">Conversion del mes (%)</label><input id="month-conversion-${index}" data-month-conversion="${index}" type="number" value="${monthlyValue}"><small>Si lo dejas igual que la conversion global, este mes hereda ese porcentaje.</small></div>`;
+  }).join("");
+  return `<div class="field-grid">${input("meta.conversion", "Conversion global (%)", "Introduce el porcentaje visible. Por ejemplo: 3%.")}${input("meta.initialCustomers", "Cartera inicial LTV", "Base de clientes para valorar la mejora.")}</div><div class="plain-note"><strong>Meses editables</strong><p>La conversion global se copia como base en cada mes. Puedes ajustar cualquier mes si esperas una conversion distinta.</p></div><div class="audience-months">${monthInputs}</div>`;
+};
+
+const docroiOriginalBindInputs = bindInputs;
+bindInputs = function bindInputsWithMonthlyConversion() {
+  docroiOriginalBindInputs();
+  document.querySelectorAll("[data-month-conversion]").forEach((element) => {
+    element.addEventListener("input", () => {
+      const index = Number(element.dataset.monthConversion);
+      state.monthlyConversion[index] = element.value;
+      changed(false);
+    });
+  });
+  const globalConversion = document.getElementById("meta-conversion");
+  if (globalConversion) {
+    globalConversion.addEventListener("input", () => {
+      document.querySelectorAll("[data-month-conversion]").forEach((element) => {
+        const index = Number(element.dataset.monthConversion);
+        if (!hasInput(state.monthlyConversion[index])) element.value = globalConversion.value;
+      });
+    });
+  }
 };
 
 function kaiInput(field) { const value = displayValue(readPath(field.path)); const placeholder = field.path.startsWith("kai.") ? placeholders.kai?.[field.path.split(".")[1]] || "" : ""; return `<div class="kai-field"><div><span class="kai-code">${field.code}</span><h3>${field.title}</h3><p>${field.question}</p></div><input data-path="${field.path}" type="number" value="${value}" placeholder="${placeholder}"><small>${field.help}</small></div>`; }
