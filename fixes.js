@@ -1,4 +1,4 @@
-const rgpdText = "Autorizo el tratamiento de mis datos personales con la finalidad de gestionar mi participación en esta iniciativa de carácter orientativo y académico. La información recopilada podrá utilizarse para el análisis y elaboración de propuestas o acciones vinculadas al ámbito comercial, siempre dentro del marco establecido por el Reglamento General de Protección de Datos (RGPD).";
+const rgpdText = "Autorizo el tratamiento de mis datos personales con la finalidad de gestionar mi participación en esta iniciativa de carácter orientativo. La información recopilada podrá utilizarse para el análisis y elaboración de propuestas o acciones vinculadas al ámbito comercial, siempre dentro del marco establecido por el Reglamento General de Protección de Datos (RGPD).";
 
 function readPath(path) {
   return path.split(".").reduce((obj, key) => obj?.[key], state);
@@ -15,6 +15,17 @@ function updateStepRenderer(index, renderer) {
 }
 
 const docroiOriginalCalculate = calculate;
+if (typeof placeholders !== "undefined") {
+  placeholders.notes = "Ejemplo: caso de negocio para estimar si la campaña sostiene su inversión y mejora el valor del cliente.";
+}
+if (Array.isArray(steps) && steps[7]) {
+  if (Array.isArray(steps[7])) {
+    steps[7][1] = "El cierre traduce el modelo en indicadores que un C-level puede leer rápido y un equipo puede defender con criterio.";
+  } else {
+    steps[7].intro = "El cierre traduce el modelo en indicadores que un C-level puede leer rápido y un equipo puede defender con criterio.";
+  }
+}
+
 calculate = function calculateWithKOnVan() {
   const result = docroiOriginalCalculate();
   const kValue = n(readPath("meta.kValue"));
