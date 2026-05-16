@@ -75,6 +75,29 @@ renderContext = function renderContextWithRgpd() {
   `;
 };
 
+renderAudience = function renderAudienceResponsive() {
+  const monthInputs = months
+    .map(
+      (month, index) => `
+        <div class="month-field">
+          <label for="audience-${index}">${month}</label>
+          <input id="audience-${index}" data-array="audience" data-index="${index}" type="number" value="${displayValue(state.audience[index])}" placeholder="${placeholders.audience?.[index] || ""}">
+        </div>
+      `
+    )
+    .join("");
+
+  return `
+    <div class="field-grid">
+      ${input("meta.conversion", "Conversion objetivo (%)", "Escribe 3 para 3%.")}
+      ${input("meta.initialCustomers", "Cartera inicial LTV", "Base de clientes para valorar la mejora.")}
+    </div>
+    <div class="audience-months">
+      ${monthInputs}
+    </div>
+  `;
+};
+
 renderKpiExplain = function renderKpiExplainWithK(result) {
   const rows = [
     ["ROI", pct(result.roi), "Retorno sobre la inversion total del proyecto."],
@@ -89,6 +112,7 @@ renderKpiExplain = function renderKpiExplainWithK(result) {
 };
 
 updateStepRenderer(0, renderContext);
+updateStepRenderer(1, renderAudience);
 renderCurrentStep();
 renderLive();
 renderReport();
