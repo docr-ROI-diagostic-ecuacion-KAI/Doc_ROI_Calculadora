@@ -1,0 +1,272 @@
+.hero-actions {
+  display: none !important;
+}
+
+.sidebar {
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.sidebar::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+.sidebar .docroi-logo {
+  width: 178px;
+  max-width: 100%;
+  padding: 0;
+  background: #000;
+}
+
+.sidebar .brand-lockup {
+  display: grid;
+  gap: 14px;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: transparent !important;
+}
+
+input,
+textarea,
+select {
+  box-shadow: none !important;
+  background-image: none !important;
+}
+
+select {
+  width: 100%;
+  border: 1px solid #d4d4d4;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--ink);
+  padding: 11px 12px;
+}
+
+.calc-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  margin-top: 16px;
+}
+
+.calc-table {
+  width: 100%;
+  min-width: 980px;
+  border-collapse: collapse;
+}
+
+.calc-table th,
+.calc-table td {
+  border-bottom: 1px solid var(--line);
+  padding: 10px;
+  vertical-align: top;
+  text-align: left;
+}
+
+.calc-table th {
+  background: #111;
+  color: #fff;
+  font-size: .82rem;
+  text-transform: uppercase;
+}
+
+.calc-table input,
+.calc-table select {
+  min-width: 120px;
+  padding: 9px 10px;
+}
+
+.calc-table input[type="checkbox"] {
+  width: 18px;
+  min-width: 18px;
+  height: 18px;
+  accent-color: #111;
+}
+
+.calc-total {
+  white-space: nowrap;
+  font-weight: 900;
+  color: #111;
+}
+
+.docroi-print-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  border: 1px solid #111;
+  border-radius: 999px;
+  padding: 10px 18px;
+  background: #111;
+  color: #fff;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.report-print-top,
+.report-print-bottom {
+  display: flex;
+  justify-content: flex-end;
+  margin: 18px 0;
+}
+
+.report-cover.docroi-black-cover,
+.docroi-report-footer {
+  background: #000;
+  color: #fff;
+  border: 0;
+  padding: 28px;
+  margin: 0 0 24px;
+  border-radius: 0;
+}
+
+.report-cover.docroi-black-cover .brand-lockup,
+.report-cover.docroi-black-cover .brand-lockup.compact {
+  color: #fff;
+}
+
+.report-cover.docroi-black-cover .eyebrow,
+.report-cover.docroi-black-cover h2,
+.report-cover.docroi-black-cover p,
+.docroi-report-footer p,
+.docroi-report-footer a {
+  color: #fff !important;
+}
+
+.report-cover.docroi-black-cover .report-logo,
+.docroi-report-footer img {
+  width: 190px;
+  max-width: 100%;
+  background: #000;
+  padding: 0;
+}
+
+.docroi-report-footer {
+  margin-top: 34px;
+  text-align: center;
+}
+
+.docroi-diip {
+  background: #003b5c;
+  color: #fff;
+  padding: 44px 24px;
+  margin-top: 32px;
+}
+
+.docroi-diip-inner {
+  max-width: 980px;
+  margin: 0 auto;
+}
+
+.docroi-diip-head {
+  text-align: center;
+  max-width: 760px;
+  margin: 0 auto 28px;
+}
+
+.docroi-diip-head span {
+  display: block;
+  color: #d8ecf8;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: .06em;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+.docroi-diip-head h2 {
+  color: #fff;
+  font-size: clamp(2rem, 4vw, 2.7rem);
+  line-height: 1.12;
+  margin-bottom: 14px;
+}
+
+.docroi-diip-head p {
+  color: #eaf6fb;
+  line-height: 1.7;
+}
+
+.docroi-diip-list {
+  display: grid;
+  gap: 10px;
+}
+
+.docroi-diip-item {
+  background: #fff;
+  color: #0b0f19;
+  border-radius: 16px;
+  padding: 16px 20px;
+  display: grid;
+  grid-template-columns: 58px 1fr;
+  gap: 16px;
+  align-items: center;
+}
+
+.docroi-diip-letter {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: #0b0f19;
+  color: #fff;
+  font-size: 1.7rem;
+  font-weight: 900;
+}
+
+.docroi-diip-item strong {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 1.1rem;
+}
+
+.docroi-diip-item p {
+  margin: 0;
+  color: #5b6472;
+  line-height: 1.5;
+}
+
+@media (max-width: 760px) {
+  .calc-table {
+    min-width: 820px;
+  }
+
+  .report-print-top,
+  .report-print-bottom {
+    justify-content: stretch;
+  }
+
+  .docroi-print-action {
+    width: 100%;
+  }
+}
+
+@media print {
+  .docroi-print-action,
+  .report-print-top,
+  .report-print-bottom,
+  .step-controls,
+  .hero-actions {
+    display: none !important;
+  }
+
+  .report-cover.docroi-black-cover,
+  .docroi-report-footer,
+  .docroi-diip {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .report-sheet {
+    padding: 0 !important;
+  }
+
+  .report-section,
+  .docroi-diip,
+  .docroi-report-footer {
+    break-inside: avoid;
+  }
+}
