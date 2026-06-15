@@ -1,0 +1,47 @@
+.exec-question-clean .exec-question-head {
+  grid-template-columns: 1fr !important;
+}
+
+.exec-question-clean .exec-question-head > div {
+  min-width: 0;
+}
+
+.explainer {
+  display: grid;
+  gap: 6px;
+  align-content: start;
+  min-width: 0;
+}
+
+.explainer span {
+  display: block;
+  color: var(--docroi-muted, #6b7280);
+  font-size: 0.82rem;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.explainer strong {
+  display: block;
+  font-size: clamp(1.35rem, 2.4vw, 1.9rem);
+  line-height: 1.08;
+  word-break: break-word;
+}
+
+.kai-economics .field-grid {
+  align-items: start;
+}
+
+.kai-economics .field label {
+  line-height: 1.25;
+}
+
+.kai-economics .field small {
+  min-height: 2.7em;
+}
+
+@media (max-width: 760px) {
+  .explainer strong {
+    font-size: 1.55rem;
+  }
+}
