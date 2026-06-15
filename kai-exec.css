@@ -93,13 +93,169 @@
   color: #fff;
 }
 
+.kai-result-suite {
+  display: grid;
+  gap: 22px;
+}
+
+.kai-metric-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.kai-metric-card,
+.kai-mini-grid article,
+.kai-axis-card,
+.kai-data-grade {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  padding: 16px;
+}
+
+.kai-metric-card > span,
+.kai-mini-grid span,
+.kai-axis-card span,
+.kai-data-grade span {
+  display: block;
+  color: #555;
+  font-size: 0.82rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.kai-metric-card > strong,
+.kai-data-grade strong {
+  display: block;
+  margin: 6px 0 8px;
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  line-height: 1;
+}
+
+.kai-metric-card p,
+.kai-mini-grid p,
+.kai-axis-card p,
+.kai-data-grade p,
+.kai-radar-section p {
+  margin: 0;
+  color: #333;
+  line-height: 1.5;
+}
+
+.kai-metric-card div {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+
+.kai-metric-card b {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.kai-mini-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.kai-mini-grid strong,
+.kai-axis-card strong {
+  display: block;
+  margin: 5px 0;
+  font-size: 1.25rem;
+}
+
+.kai-radar-section {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fafafa;
+  padding: 18px;
+}
+
+.kai-radar-section h3 {
+  margin-bottom: 8px;
+}
+
+.kai-radar-layout {
+  display: grid;
+  grid-template-columns: minmax(260px, 360px) minmax(0, 1fr);
+  gap: 18px;
+  align-items: center;
+  margin-top: 16px;
+}
+
+.kai-radar-figure {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+}
+
+.kai-radar-figure svg {
+  width: min(100%, 340px);
+  height: auto;
+  border: 1px solid var(--line);
+  background: #fff;
+}
+
+.kai-radar-numbers {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+}
+
+.kai-radar-numbers span {
+  min-width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #111;
+  background: #fff;
+  font-weight: 900;
+  font-size: 0.78rem;
+}
+
+.kai-radar-read {
+  padding: 16px;
+  border-left: 4px solid #111;
+  background: #fff;
+}
+
+.kai-radar-read strong {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.kai-axis-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.kai-data-grade {
+  background: #111;
+  color: #fff;
+}
+
+.kai-data-grade span,
+.kai-data-grade p {
+  color: #fff;
+}
+
 .trace-note {
   margin-top: 14px;
   font-size: 0.82rem;
 }
 
 @media (max-width: 780px) {
-  .rating-row {
+  .rating-row,
+  .kai-metric-grid,
+  .kai-mini-grid,
+  .kai-radar-layout,
+  .kai-axis-grid {
     grid-template-columns: 1fr;
   }
 
