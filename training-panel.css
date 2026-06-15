@@ -1,0 +1,52 @@
+.learning-card {
+  border: 1px solid var(--docroi-line, #dfe3ea);
+  border-radius: 8px;
+  background: #fff;
+  padding: 14px;
+}
+
+.learning-card span {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--docroi-blue, #003b5c);
+  font-size: 0.78rem;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.learning-card p {
+  margin: 0;
+  color: #1f2937;
+  line-height: 1.45;
+}
+
+.learning-read {
+  background: var(--docroi-black, #0b0f19) !important;
+  color: #fff !important;
+}
+
+.learning-read p,
+.learning-read small {
+  color: #fff;
+}
+
+.learning-read small {
+  display: block;
+  margin-top: 10px;
+  opacity: 0.82;
+  line-height: 1.45;
+}
+
+.live-panel .panel-heading .eyebrow::after {
+  content: " formativo";
+}
+
+#report[style*="display: none"] {
+  margin: 0;
+}
+
+@media print {
+  #report {
+    display: block !important;
+  }
+}
