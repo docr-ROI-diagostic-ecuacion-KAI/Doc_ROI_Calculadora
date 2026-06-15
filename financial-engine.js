@@ -64,6 +64,10 @@ calculate = function calculateDocroiFinancial() {
   };
 };
 
+function docroiIsFinalStep() {
+  return typeof currentStep !== "undefined" && Array.isArray(steps) && currentStep === steps.length - 1;
+}
+
 function docroiFinancialDecision(financial, kai) {
   if (financial.roi === null) return { status: "status-watch", title: "Diagnostico pendiente", body: "Completa ingresos, OPEX y CAPEX para calcular una viabilidad financiera defendible." };
   if (financial.roi < 0) return { status: "status-risk", title: "Proyecto en riesgo", body: "Los ingresos declarados no recuperan todavia la suma de OPEX y CAPEX. La prioridad es aumentar retorno atribuible, reducir coste o redisenar el alcance." };
@@ -99,8 +103,9 @@ function docroiRenderFinancialSuite(result) {
   const kai = result.kai || calculateKai();
   const decision = docroiFinancialDecision(financial, kai);
   const waccMultipleText = financial.waccMultiple === null ? "No calculable" : `${num(financial.waccMultiple)}x`;
+  const monetizationBase = (kai.maturityAverage ?? docroiAverageScore()) === null ? null : (kai.maturityAverage ?? docroiAverageScore()) / 5;
   const cards = [
-    docroiKpiCard("Ingresos declarados", docroiMoneyOrPendingFinal(financial.totalRevenue), "Suma de los ingresos introducidos en la pestaña de ingresos."),
+    docroiKpiCard("Ingresos declarados", docroiMoneyOrPendingFinal(financial.totalRevenue), "Suma de los ingresos introducidos en la pestana de ingresos."),
     docroiKpiCard("Coste total", docroiMoneyOrPendingFinal(financial.totalCost), "OPEX + CAPEX declarados. Es la base de recuperacion del proyecto."),
     docroiKpiCard("ROI", docroiPercentOrPending(financial.roi, 1), "(Ingresos - OPEX - CAPEX) / (OPEX + CAPEX)."),
     docroiKpiCard("ROI sobre WACC", waccMultipleText, "Veces que el ROI cubre la referencia financiera declarada."),
@@ -109,17 +114,23 @@ function docroiRenderFinancialSuite(result) {
     docroiKpiCard("Payback", docroiMonthsOrPendingFinal(financial.payback), "Mes estimado en que la caja acumulada recupera la inversion."),
     docroiKpiCard("LTV diferencial", docroiMoneyOrPendingFinal(financial.ltv?.differential), "Valor extra por cliente al mejorar la retencion declarada."),
     docroiKpiCard("Riesgo de churn", financial.churnStrategy === null ? "No calculable" : docroiPercentOrPending(financial.churnStrategy, 1), "Riesgo aproximado de perdida de cartera segun la retencion con estrategia."),
-    docroiKpiCard("Monetizacion del dato", docroiFormatPercentDot((kai.maturityAverage ?? docroiAverageScore()) === null ? null : (kai.maturityAverage ?? docroiAverageScore()) / 5, 0), "Promedio ejecutivo de capacidades KAI normalizado sobre 100.")
+    docroiKpiCard("Monetizacion del dato", docroiFormatPercentDot(monetizationBase, 0), "Promedio ejecutivo de capacidades KAI normalizado sobre 100.")
   ].join("");
   return `<div class="financial-suite"><section class="plain-note"><strong class="${decision.status}">${decision.title}</strong><p>${decision.body}</p></section><div class="financial-grid">${cards}</div>${docroiFinancialChart(financial)}<section class="plain-note"><strong>Donde mejorar para generar mas ROI</strong><ul>${docroiImprovementList(financial, kai).map((item) => `<li>${item}</li>`).join("")}</ul></section></div>`;
 }
 
 renderKpiExplain = function renderKpiExplainFinancial(result) {
-  const kaiBlock = typeof docroiRadarBlock === "function" ? `<section class="report-section"><h3>Indicadores de monetizacion del dato KAI·ROI</h3>${docroiRadarBlock(result)}<div class="kai-data-grade"><span>Grado de monetizacion del dato</span><strong>${docroiFormatPercentDot(((result.kai?.maturityAverage ?? docroiAverageScore()) === null ? null : (result.kai?.maturityAverage ?? docroiAverageScore()) / 5), 0)}</strong><p>${docroiMonetizationText(((result.kai?.maturityAverage ?? docroiAverageScore()) === null ? null : (result.kai?.maturityAverage ?? docroiAverageScore()) / 5))}</p></div></section>` : "";
+  const maturity = (result.kai?.maturityAverage ?? docroiAverageScore()) === null ? null : (result.kai?.maturityAverage ?? docroiAverageScore()) / 5;
+  const kaiBlock = typeof docroiRadarBlock === "function" ? `<section class="report-section"><h3>Indicadores de monetizacion del dato KAI·ROI</h3>${docroiRadarBlock(result)}<div class="kai-data-grade"><span>Grado de monetizacion del dato</span><strong>${docroiFormatPercentDot(maturity, 0)}</strong><p>${docroiMonetizationText(maturity)}</p></div></section>` : "";
   return `${docroiRenderFinancialSuite(result)}${kaiBlock}`;
 };
 
 renderReport = function renderReportFinancial() {
+  if (!docroiIsFinalStep()) {
+    if (typeof docroiSetReportVisibility === "function") docroiSetReportVisibility();
+    return;
+  }
+  if (typeof docroiSetReportVisibility === "function") docroiSetReportVisibility();
   const result = calculate();
   const meta = `${state.meta.project || "Empresa sin nombre"} - ${state.meta.sector || "Sector"} - ${state.meta.country || "Territorio"}`;
   document.getElementById("reportMeta").textContent = meta;
@@ -127,8 +138,15 @@ renderReport = function renderReportFinancial() {
 };
 
 renderLive = function renderLiveFinancial() {
+  if (!docroiIsFinalStep()) {
+    if (typeof docroiRenderGuidePanel === "function") docroiRenderGuidePanel();
+    if (typeof docroiSetReportVisibility === "function") docroiSetReportVisibility();
+    return;
+  }
   const result = calculate();
   const decision = docroiFinancialDecision(result.financial, result.kai);
+  const mini = document.querySelector(".mini-chart");
+  if (mini) mini.style.display = "block";
   document.getElementById("resultTitle").textContent = decision.title;
   document.getElementById("kpiStrip").innerHTML = [
     ["ROI", docroiPercentOrPending(result.financial.roi, 1), "Retorno sobre coste total"],
@@ -138,6 +156,7 @@ renderLive = function renderLiveFinancial() {
   ].map((kpi) => `<div class="kpi-card"><span>${kpi[0]}</span><strong>${kpi[1]}</strong><span>${kpi[2]}</span></div>`).join("");
   document.getElementById("executiveRead").innerHTML = `<strong class="${decision.status}">${decision.title}</strong><p>${decision.body}</p>`;
   renderChart(result.financial.accumulated);
+  if (typeof docroiSetReportVisibility === "function") docroiSetReportVisibility();
 };
 
 renderCurrentStep();
