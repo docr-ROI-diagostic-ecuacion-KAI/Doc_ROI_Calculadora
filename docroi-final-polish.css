@@ -25,6 +25,32 @@
   gap: 14px;
 }
 
+.question-panel {
+  display: flex;
+  min-height: calc(100vh - 148px);
+  flex-direction: column;
+}
+
+#stepContent {
+  flex: 1;
+}
+
+.step-controls {
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: auto;
+  padding-top: 22px;
+  position: sticky;
+  bottom: 18px;
+  z-index: 20;
+  background: linear-gradient(180deg, rgba(255,255,255,0), #fff 30%);
+}
+
+.step-controls .ghost-action,
+.step-controls .primary-action {
+  min-width: 126px;
+}
+
 input::placeholder,
 textarea::placeholder {
   color: transparent !important;
@@ -90,6 +116,60 @@ select {
   white-space: nowrap;
   font-weight: 900;
   color: #111;
+}
+
+.audience-model {
+  display: grid;
+  gap: 18px;
+}
+
+.audience-estimator {
+  align-items: end;
+}
+
+.audience-apply {
+  align-self: stretch;
+  justify-content: end;
+}
+
+.audience-apply .primary-action {
+  width: 100%;
+  min-height: 48px;
+}
+
+.audience-summary {
+  margin-top: 4px;
+}
+
+.friendly-audience-months {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.audience-card {
+  display: grid;
+  gap: 8px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #fff;
+}
+
+.audience-card h3 {
+  margin: 0 0 4px;
+  font-size: 1rem;
+}
+
+.audience-card label {
+  color: #444;
+  font-size: .84rem;
+  font-weight: 850;
+}
+
+.audience-card input {
+  min-height: 40px;
+  padding: 8px 10px;
 }
 
 .docroi-print-action {
@@ -229,9 +309,34 @@ select {
   line-height: 1.5;
 }
 
+@media (max-width: 1080px) {
+  .question-panel {
+    min-height: auto;
+  }
+
+  .step-controls {
+    position: static;
+    background: transparent;
+  }
+}
+
 @media (max-width: 760px) {
   .calc-table {
     min-width: 820px;
+  }
+
+  .friendly-audience-months {
+    grid-template-columns: 1fr;
+  }
+
+  .step-controls {
+    justify-content: stretch;
+  }
+
+  .step-controls .ghost-action,
+  .step-controls .primary-action {
+    flex: 1;
+    min-width: 0;
   }
 
   .report-print-top,
